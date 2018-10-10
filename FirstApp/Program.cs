@@ -3,25 +3,17 @@ using System.Collections.Generic;
 
 namespace FirstApp
 {
-    enum TagType
-    {
-        HTML=1,
-        BODY=2,
-        HEAD=3,
-        TITLE=4,
-        DIV=5,
-        H1=6
-    }
+   
     class Program
     {
         static void Main(string[] args)
         {
             System.IO.File.WriteAllText("index.html", "");
-            Tag html = new Tag(TagType.HTML);
-            Tag body = new Tag(TagType.BODY);
-            Tag head = new Tag(TagType.HEAD);
-            Tag title = new Tag(TagType.TITLE);
-            Tag div = new Tag(TagType.DIV);
+            Tag html = new Tag(TagType.Html);
+            Tag body = new Tag(TagType.Body);
+            Tag head = new Tag(TagType.Head);
+            Tag title = new Tag(TagType.Title);
+            Tag div = new Tag(TagType.Div);
             Tag h1 = new Tag(TagType.H1);
 
             html.AddChild(head);
