@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace FirstApp
+﻿namespace FirstApp
 {
    
     class Program
@@ -19,13 +16,14 @@ namespace FirstApp
             html.AddChild(head);
             html.AddChild(body);
             head.AddChild(title);
-            title.SetContent("Titlu");
+            //title.SetContent("Titlu");
             body.AddChild(div);
             div.AddChild(h1);
-            div.AddAttribute("color", "blue");
-            h1.SetContent("Gigi 4 the WIN!!");
-
+            //div.AddAttribute("color", "blue");
+            //h1.SetContent("Gigi 4 the WIN!!");
+            //head.SetContent("gigel");
             html.Render();
+            Parser.ParserFile("index.html");
         }
     }
 

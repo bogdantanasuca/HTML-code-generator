@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-enum TagType
+﻿public enum TagType
 {
     Html = 1,
     Body = 2,

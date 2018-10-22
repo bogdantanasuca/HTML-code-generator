@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 
 namespace FirstApp
 {
-    class Tag
+   class Tag : BaseClass
     {
-        private TagType Type;
-        private IDictionary<string, string> Attributes = new Dictionary<string, string>();
-        private string Content;
         private int Depth;
         List<Tag> Children = new List<Tag>();
         private Tag() { }
@@ -23,7 +18,7 @@ namespace FirstApp
         {
             this.Children.Add(child);
             child.Depth = this.Depth + 1;
-            Console.WriteLine(child.Depth + " " + child.Type);
+            //Console.WriteLine(child.Depth + " " + child.Type);
         }
         public void AddAttribute(string attribute,string value)
         {
