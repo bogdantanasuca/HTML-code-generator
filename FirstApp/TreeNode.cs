@@ -7,7 +7,6 @@ namespace FirstApp
         private List<TreeNode> Children { get; set; }
         private TreeNode Father { get; set; }
         private string Name { get; set; }
-        //private TagType TypeTag { get; set; }
         public TreeNode(TreeNode Parrent, string name)
         {
             this.Father = Parrent;

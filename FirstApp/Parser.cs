@@ -10,16 +10,14 @@ namespace FirstApp
             string text = System.IO.File.ReadAllText(FileLocation);
             text = Regex.Replace(text, @"\t|\n|\r", "");
 
-            //System.Console.Write(text);
             string TagName = "";
             TreeNode Root = new TreeNode(null, "ROOT");
-            TreeNode Parrent = Root;
+            TreeNode ParrentNode = Root;
             TreeNode CurrentNode = null;
-            //TreeNode Child;
+            Tag ParrentTag = null;
             for (int i = 0; i < text.Length; i++)
             {
                 TagName = "";
-                //System.Console.Write(text[i]);
                 int j = i + 1;
                 //Obtain name of tag
                 if (text[i] == '<' && text[i + 1] != '/')
@@ -30,29 +28,22 @@ namespace FirstApp
                         TagName += text[j];
                         j++;
                     }
-                    //System.Console.Write(TagName + '\n');
                     TagName = TagName.ToLower();
-                    TreeNode Node = new TreeNode(Parrent, TagName);
+                    TreeNode Node = new TreeNode(ParrentNode, TagName);
                     CurrentNode = Node;
-                    Parrent.AddChildren(Node);
-                    Parrent = Node;
-                    Node.PrintName();
-                    System.Console.Write(" is opened \n");
-                    Parrent.PrintName();
-                    System.Console.Write(" is the parent \n");
+                    Tag tag = CreateTag(CurrentNode);
+                    ParrentNode.AddChildren(Node);
+                    ParrentNode = Node;
+                    ParrentTag = tag;
                 }
                 else if (text[i] == '<' && text[i + 1] == '/')
                 {
-                    CurrentNode = Parrent;
-                    CurrentNode.PrintName();
-                    System.Console.Write(" is closed \n");
-                    Parrent = Parrent.GetFather();
-                    Parrent.PrintName();
-                    System.Console.Write(" is the parent \n");
+                    CurrentNode = ParrentNode;
+                    ParrentNode = ParrentNode.GetFather();
                 }
             }
         }
-        private Tag CreateTag(TreeNode Node)
+        private static Tag CreateTag(TreeNode Node)
         {
             Tag NewTag = null;
             switch (Node.GetName())
