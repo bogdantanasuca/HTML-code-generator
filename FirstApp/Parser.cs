@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Text.RegularExpressions;
 
 namespace FirstApp
 {
@@ -30,24 +31,52 @@ namespace FirstApp
                         j++;
                     }
                     //System.Console.Write(TagName + '\n');
-
+                    TagName = TagName.ToLower();
                     TreeNode Node = new TreeNode(Parrent, TagName);
                     CurrentNode = Node;
                     Parrent.AddChildren(Node);
                     Parrent = Node;
                     Node.PrintName();
-                    System.Console.Write('\n');
+                    System.Console.Write(" is opened \n");
+                    Parrent.PrintName();
+                    System.Console.Write(" is the parent \n");
                 }
                 else if (text[i] == '<' && text[i + 1] == '/')
                 {
+                    CurrentNode = Parrent;
                     CurrentNode.PrintName();
                     System.Console.Write(" is closed \n");
                     Parrent = Parrent.GetFather();
                     Parrent.PrintName();
                     System.Console.Write(" is the parent \n");
                 }
-
             }
+        }
+        private Tag CreateTag(TreeNode Node)
+        {
+            Tag NewTag = null;
+            switch (Node.GetName())
+            {
+                case "html":
+                    NewTag = new Tag(TagType.Html);
+                    break;
+                case "body":
+                    NewTag = new Tag(TagType.Body);
+                    break;
+                case "head":
+                    NewTag = new Tag(TagType.Head);
+                    break;
+                case "div":
+                    NewTag = new Tag(TagType.Div);
+                    break;
+                case "h1":
+                    NewTag = new Tag(TagType.H1);
+                    break;
+                case "title":
+                    NewTag = new Tag(TagType.Title);
+                    break;
+            }
+            return NewTag;
         }
     }
 }
