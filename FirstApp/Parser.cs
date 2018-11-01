@@ -5,69 +5,94 @@ namespace FirstApp
 {
     class Parser
     {
-        public static void ParserFile(string FileLocation)
+        private static Tag ParrentTag;
+        private static Tag CurrentTag;
+        private static Tag Root;
+
+
+        public static void ParseFile(string FileLocation)
         {
             string text = System.IO.File.ReadAllText(FileLocation);
             text = Regex.Replace(text, @"\t|\n|\r", "");
-
             string TagName = "";
-            TreeNode Root = new TreeNode(null, "ROOT");
-            TreeNode ParrentNode = Root;
-            TreeNode CurrentNode = null;
-            Tag ParrentTag = null;
             for (int i = 0; i < text.Length; i++)
             {
-                TagName = "";
                 int j = i + 1;
                 //Obtain name of tag
                 if (text[i] == '<' && text[i + 1] != '/')
                 {
-
-                    while (text[j] != '>')
+                    while (text[j] != '>' && text[j] != ' ')
                     {
                         TagName += text[j];
                         j++;
                     }
-                    TagName = TagName.ToLower();
-                    TreeNode Node = new TreeNode(ParrentNode, TagName);
-                    CurrentNode = Node;
-                    Tag tag = CreateTag(CurrentNode);
-                    ParrentNode.AddChildren(Node);
-                    ParrentNode = Node;
-                    ParrentTag = tag;
+                    i = j;
+                    if (Root == null)
+                    {
+                        Root = CreateTag(TagName);
+                        CurrentTag = Root;
+                    }
+                    else
+                    {
+                        ParseTag(TagName);
+                    }
                 }
                 else if (text[i] == '<' && text[i + 1] == '/')
                 {
-                    CurrentNode = ParrentNode;
-                    ParrentNode = ParrentNode.GetFather();
+                    CurrentTag = CurrentTag.GetFather();
+                    if (ParrentTag != null)
+                    {
+                        ParrentTag = ParrentTag.GetFather();
+                    }
+                    while (text[i] != '>')
+                    {
+                        i++;
+                    }
                 }
+                else
+                {
+                    string content = "";
+                    j = i;
+                    while (text[j] != '<')
+                    {
+                        content += text[j];
+                        j++;
+                    }
+                    i = j - 1;
+                    Element temp = new Element();
+                    temp.SetContent(content);
+                    CurrentTag.AddElement(temp);
+                }
+                TagName = "";
             }
+            Console.WriteLine("Render of the Tree:");
+            Console.WriteLine(Root.CreateString(0));
         }
-        private static Tag CreateTag(TreeNode Node)
+        private static Tag CreateTag(string name)
         {
-            Tag NewTag = null;
-            switch (Node.GetName())
+            switch (name)
             {
                 case "html":
-                    NewTag = new Tag(TagType.Html);
-                    break;
+                    return new HtmlTag();
                 case "body":
-                    NewTag = new Tag(TagType.Body);
-                    break;
+                    return new BodyTag();
                 case "head":
-                    NewTag = new Tag(TagType.Head);
-                    break;
+                    return new HeadTag();
                 case "div":
-                    NewTag = new Tag(TagType.Div);
-                    break;
+                    return new DivTag();
                 case "h1":
-                    NewTag = new Tag(TagType.H1);
-                    break;
+                    return new H1Tag();
                 case "title":
-                    NewTag = new Tag(TagType.Title);
-                    break;
+                    return new TitleTag();
+                default:
+                    return null;
             }
-            return NewTag;
+        }
+        private static void ParseTag(string tagName)
+        {
+            ParrentTag = CurrentTag;
+            CurrentTag = CreateTag(tagName);
+            ParrentTag.AddTag(CurrentTag);
         }
     }
 }

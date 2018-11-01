@@ -1,75 +1,87 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text;
 
 namespace FirstApp
 {
-   class Tag : BaseClass
+    class Tag : Element
     {
-        private int Depth;
-        List<Tag> Children = new List<Tag>();
+        public List<Element> Children { get; set; }
+        public bool IsSelfClosing { get; set; }
+
+        public TagType Type { get; set; }
+        public IDictionary<string, string> Attributes = new Dictionary<string, string>();
+        public Tag Father { get; set; }
         private Tag() { }
         public Tag(TagType Type)
         {
             this.Type = Type;
             this.Content = "";
-            this.Depth = 0;
+            this.Father = null;
         }
-        public void AddChild(Tag child)
+        public Tag GetFather()
         {
-            this.Children.Add(child);
-            child.Depth = this.Depth + 1;
-            //Console.WriteLine(child.Depth + " " + child.Type);
+            return Father;
         }
-        public void AddAttribute(string attribute,string value)
+        virtual public void AddTag(Tag child)
         {
+            Children.Add(child);
+            child.Father = this;
+        }
+
+        public void AddElement(Element Temp)
+        {
+            Children.Add(Temp);
+        }
+
+        public void AddAttribute(string attribute, string value)
+        {
+            value = '"' + value + '"';
             this.Attributes.Add(attribute, value);
         }
-        public void SetContent(string content)
-        {
-            this.Content = content;
-        }
-        public void print()
-        {
-            foreach (KeyValuePair<string, string> kvp in this.Attributes)
-            {
-                Console.WriteLine("Key = {0}, Value = {1}",kvp.Key, kvp.Value);
-            }
-        }
+
         public void Render()
         {
-
-            string TagLine = "<" + this.Type;
-            foreach (KeyValuePair<string, string> kvp in this.Attributes)
+            Console.WriteLine("Render of the Html file:");
+            Console.WriteLine(CreateString(0));
+            File.WriteAllText("index.html", CreateString(0).ToString());
+        }
+        public StringBuilder CreateString(int Depth)
+        {
+            StringBuilder text = new StringBuilder("");
+            text = AddTabs(Depth, text);
+            text.Append("<" + Type);
+            foreach (KeyValuePair<string, string> kvp in Attributes)
             {
-                TagLine += " " + kvp.Key + "=" + kvp.Value;
+                text.Append(" " + kvp.Key + "=" + kvp.Value);
             }
-            TagLine += ">";
-
-            System.IO.File.AppendAllText("index.html", TagLine + Environment.NewLine);
-            if (this.Content != "")
+            text.Append(">\n");
+            foreach (var child in Children)
             {
-                for (int i = 0; i < this.Depth+1; i++)
+                if (child is Tag)
                 {
-                    System.IO.File.AppendAllText("index.html", "\t");
+                    var temp = child as Tag;
+                    text.Append(temp.CreateString(Depth + 1));
                 }
-                System.IO.File.AppendAllText("index.html", this.Content + Environment.NewLine);
-            }
-            
-            foreach (var child in this.Children)
-            {
-                for(int i=0;i<=this.Depth;i++)
+                else
                 {
-                    System.IO.File.AppendAllText("index.html", "\t");
+                    text = AddTabs(Depth + 1, text);
+                    text.Append(child.Content + "\n");
                 }
-                child.Render();
-                System.IO.File.AppendAllText("index.html",Environment.NewLine);
             }
-            for (int i = 0; i < this.Depth; i++)
+            text = AddTabs(Depth, text);
+            text.Append("</" + Type + ">\n");
+            return text;
+        }
+        private StringBuilder AddTabs(int times, StringBuilder text)
+        {
+            for (var index = 0; index < times; index++)
             {
-                System.IO.File.AppendAllText("index.html", "\t");
+                text.Append("\t");
             }
-            TagLine = "</" + this.Type + ">";
-            System.IO.File.AppendAllText("index.html", TagLine);
+            return text;
         }
     }
+
 }

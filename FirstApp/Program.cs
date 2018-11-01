@@ -1,29 +1,39 @@
 ﻿namespace FirstApp
 {
-   
+
     class Program
     {
         static void Main(string[] args)
         {
-            System.IO.File.WriteAllText("index.html", "");
-            Tag html = new Tag(TagType.Html);
-            Tag body = new Tag(TagType.Body);
-            Tag head = new Tag(TagType.Head);
-            Tag title = new Tag(TagType.Title);
-            Tag div = new Tag(TagType.Div);
-            Tag h1 = new Tag(TagType.H1);
+            Tag html = new HtmlTag();
+            Tag body = new BodyTag();
+            Tag head = new HeadTag();
+            Tag title = new TitleTag();
+            Tag div = new DivTag();
+            Element elem1 = new Element();
+            Element elem2 = new Element();
+            Element elem3 = new Element();
 
-            html.AddChild(head);
-            html.AddChild(body);
-            head.AddChild(title);
-            //title.SetContent("Titlu");
-            body.AddChild(div);
-            div.AddChild(h1);
+            //Tag h1 = new Tag(TagType.h1);
+
+            elem1.SetContent("titlu");
+            elem2.SetContent("giele");
+            elem3.SetContent("gielesss");
+            html.AddTag(head);
+            html.AddTag(body);
+            head.AddElement(elem1);
+            head.AddTag(title);
+            head.AddElement(elem2);
+            head.AddTag(title);
+            head.AddElement(elem3);
+            body.AddTag(div);
+            //div.AddTag(h1);
             //div.AddAttribute("color", "blue");
-            //h1.SetContent("Gigi 4 the WIN!!");
+            //div.AddAttribute("color", "red");
+            //title.SetContent("Gigi 4 the WIN!!");
             //head.SetContent("gigel");
+            Parser.ParseFile("index.html");
             html.Render();
-            Parser.ParserFile("index.html");
         }
     }
 
