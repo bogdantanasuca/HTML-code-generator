@@ -56,22 +56,29 @@ namespace FirstApp
             {
                 text.Append(" " + kvp.Key + "=" + kvp.Value);
             }
-            text.Append(">\n");
-            foreach (var child in Children)
+            if (IsSelfClosing)
             {
-                if (child is Tag)
-                {
-                    var temp = child as Tag;
-                    text.Append(temp.CreateString(Depth + 1));
-                }
-                else
-                {
-                    text = AddTabs(Depth + 1, text);
-                    text.Append(child.Content + "\n");
-                }
+                text.Append("/>\n");
             }
-            text = AddTabs(Depth, text);
-            text.Append("</" + Type + ">\n");
+            else
+            {
+                text.Append(">\n");
+                foreach (var child in Children)
+                {
+                    if (child is Tag)
+                    {
+                        var temp = child as Tag;
+                        text.Append(temp.CreateString(Depth + 1));
+                    }
+                    else
+                    {
+                        text = AddTabs(Depth + 1, text);
+                        text.Append(child.Content + "\n");
+                    }
+                }
+                text = AddTabs(Depth, text);
+                text.Append("</" + Type + ">\n");
+            }
             return text;
         }
         private StringBuilder AddTabs(int times, StringBuilder text)
@@ -83,5 +90,4 @@ namespace FirstApp
             return text;
         }
     }
-
 }

@@ -13,6 +13,7 @@
             Element elem1 = new Element();
             Element elem2 = new Element();
             Element elem3 = new Element();
+            Tag brr = new BrTag();
 
             //Tag h1 = new Tag(TagType.h1);
 
@@ -22,6 +23,7 @@
             html.AddTag(head);
             html.AddTag(body);
             head.AddElement(elem1);
+            head.AddTag(brr);
             head.AddTag(title);
             head.AddElement(elem2);
             head.AddTag(title);

@@ -21,7 +21,7 @@ namespace FirstApp
                 //Obtain name of tag
                 if (text[i] == '<' && text[i + 1] != '/')
                 {
-                    while (text[j] != '>' && text[j] != ' ')
+                    while (text[j] != '>' && text[j] != ' ' && text[j] != '/')
                     {
                         TagName += text[j];
                         j++;
@@ -32,9 +32,14 @@ namespace FirstApp
                         Root = CreateTag(TagName);
                         CurrentTag = Root;
                     }
-                    else
+                    else if (text[i] != '/')
                     {
                         ParseTag(TagName);
+                    }
+                    else
+                    {
+                        CurrentTag.AddTag(CreateTag(TagName));
+                        i++;
                     }
                 }
                 else if (text[i] == '<' && text[i + 1] == '/')
@@ -84,6 +89,8 @@ namespace FirstApp
                     return new H1Tag();
                 case "title":
                     return new TitleTag();
+                case "br":
+                    return new BrTag();
                 default:
                     return null;
             }
