@@ -1,15 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace FirstApp
+﻿namespace FirstApp
 {
-    class Element
+    public class Element
     {
         public string Content { get; set; }
+
         public void SetContent(string content)
         {
-            this.Content = content;
+            Content = content;
         }
     }
 }

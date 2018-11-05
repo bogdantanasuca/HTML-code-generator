@@ -5,26 +5,28 @@ using System.Text;
 
 namespace FirstApp
 {
-    class Tag : Element
+    public class Tag : Element
     {
         public List<Element> Children { get; set; }
         public bool IsSelfClosing { get; set; }
-
         public TagType Type { get; set; }
-        public IDictionary<string, string> Attributes = new Dictionary<string, string>();
+        public IDictionary<string, string> Attributes { get; set; }
         public Tag Father { get; set; }
-        private Tag() { }
-        public Tag(TagType Type)
+        public Tag() { }
+
+        public Tag(TagType type)
         {
-            this.Type = Type;
-            this.Content = "";
-            this.Father = null;
+            Type = type;
+            Content = "";
+            Father = null;
         }
+
         public Tag GetFather()
         {
             return Father;
         }
-        virtual public void AddTag(Tag child)
+
+        public virtual void AddTag(Tag child)
         {
             Children.Add(child);
             child.Father = this;
@@ -37,8 +39,8 @@ namespace FirstApp
 
         public void AddAttribute(string attribute, string value)
         {
-            value = '"' + value + '"';
-            this.Attributes.Add(attribute, value);
+            //value = '"' + value + '"';
+            Attributes.Add(attribute, value);
         }
 
         public void Render()
@@ -47,14 +49,18 @@ namespace FirstApp
             Console.WriteLine(CreateString(0));
             File.WriteAllText("index.html", CreateString(0).ToString());
         }
+
         public StringBuilder CreateString(int Depth)
         {
-            StringBuilder text = new StringBuilder("");
+            var text = new StringBuilder("");
             text = AddTabs(Depth, text);
             text.Append("<" + Type);
-            foreach (KeyValuePair<string, string> kvp in Attributes)
+            if (Attributes != null)
             {
-                text.Append(" " + kvp.Key + "=" + kvp.Value);
+                foreach (var kvp in Attributes)
+                {
+                    text.Append(" " + kvp.Key + "=\"" + kvp.Value + '"');
+                }
             }
             if (IsSelfClosing)
             {
@@ -81,6 +87,7 @@ namespace FirstApp
             }
             return text;
         }
+
         private StringBuilder AddTabs(int times, StringBuilder text)
         {
             for (var index = 0; index < times; index++)
@@ -88,6 +95,44 @@ namespace FirstApp
                 text.Append("\t");
             }
             return text;
+        }
+        public void PrintTag()
+        {
+            Console.WriteLine("Tag:");
+            Console.WriteLine(Type);
+            if (Attributes != null)
+            {
+                Console.WriteLine("Attributes:");
+                foreach (var att in Attributes)
+                {
+                    Console.WriteLine(att);
+                }
+            }
+            if (Children != null)
+            {
+                Console.WriteLine("Children:");
+                foreach (var child in Children)
+                {
+                    if (child is Tag)
+                    {
+                        Console.WriteLine(child.GetType());
+                        var temp = child as Tag;
+                    }
+                    else
+                    {
+                        Console.WriteLine(child.Content);
+                    }
+                }
+                foreach (var child in Children)
+                {
+                    if (child is Tag)
+                    {
+                        var temp = child as Tag;
+                        temp.PrintTag();
+                    }
+                }
+            }
+
         }
     }
 }

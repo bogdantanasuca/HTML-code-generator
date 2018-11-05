@@ -1,7 +1,7 @@
 ﻿namespace FirstApp
 {
 
-    class Program
+    public static class Program
     {
         static void Main(string[] args)
         {
@@ -30,12 +30,12 @@
             head.AddElement(elem3);
             body.AddTag(div);
             //div.AddTag(h1);
-            //div.AddAttribute("color", "blue");
-            //div.AddAttribute("color", "red");
+            div.AddAttribute("color", "blue");
+            div.AddAttribute("color1", "red");
             //title.SetContent("Gigi 4 the WIN!!");
             //head.SetContent("gigel");
-            Parser.ParseFile("index.html");
             html.Render();
+            Parser.ParseFile("index.html");
         }
     }
 

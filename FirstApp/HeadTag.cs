@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace FirstApp
 {
-    class HeadTag : Tag
+    public class HeadTag : Tag
     {
         public HeadTag() : base(TagType.head)
         {
             IsSelfClosing = false;
             Children = new List<Element>();
+            Attributes = new Dictionary<string, string>();
         }
         public override void AddTag(Tag child)
         {

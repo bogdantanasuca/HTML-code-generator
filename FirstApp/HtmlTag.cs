@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace FirstApp
 {
-    class HtmlTag : Tag
+    public class HtmlTag : Tag
     {
         public HtmlTag() : base(TagType.html)
         {
             IsSelfClosing = false;
             Children = new List<Element>();
+            Attributes = new Dictionary<string, string>();
         }
         public override void AddTag(Tag child)
         {
@@ -21,7 +21,7 @@ namespace FirstApp
             }
             else
             {
-                throw new Exception("Invalid tag: "+ child.Type+" with: "+this.Type);
+                throw new Exception("Invalid tag: " + child.Type + " with: " + this.Type);
             }
         }
     }

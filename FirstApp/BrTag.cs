@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace FirstApp
+﻿namespace FirstApp
 {
-    class BrTag : Tag
+    public class BrTag : Tag
     {
         public BrTag() : base(TagType.br)
         {

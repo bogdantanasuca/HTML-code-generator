@@ -3,7 +3,7 @@ using System.Text.RegularExpressions;
 
 namespace FirstApp
 {
-    class Parser
+    public static class Parser
     {
         private static Tag ParrentTag;
         private static Tag CurrentTag;
@@ -41,17 +41,25 @@ namespace FirstApp
                         CurrentTag.AddTag(CreateTag(TagName));
                         i++;
                     }
+                    if (text[i] == ' ')
+                    {
+                        while (text[i] != '>')
+                        {
+                            var part = text.Substring(i + 1, text.IndexOfAny(new char[] { ' ', '>' }, i + 1) - i - 1);
+                            var attributes = part.Split("=");
+                            attributes[1] = attributes[1].Substring(1, attributes[1].Length - 2);
+                            CurrentTag.AddAttribute(attributes[0], attributes[1]);
+                            i = text.IndexOfAny(new char[] { ' ', '>' }, i + 1);
+                        }
+                    }
                 }
                 else if (text[i] == '<' && text[i + 1] == '/')
                 {
+                    i += CurrentTag.Type.ToString().Length + 2;
                     CurrentTag = CurrentTag.GetFather();
                     if (ParrentTag != null)
                     {
                         ParrentTag = ParrentTag.GetFather();
-                    }
-                    while (text[i] != '>')
-                    {
-                        i++;
                     }
                 }
                 else
@@ -72,6 +80,7 @@ namespace FirstApp
             }
             Console.WriteLine("Render of the Tree:");
             Console.WriteLine(Root.CreateString(0));
+            Root.PrintTag();
         }
         private static Tag CreateTag(string name)
         {
@@ -92,7 +101,7 @@ namespace FirstApp
                 case "br":
                     return new BrTag();
                 default:
-                    return null;
+                    return new Tag();
             }
         }
         private static void ParseTag(string tagName)
@@ -101,5 +110,6 @@ namespace FirstApp
             CurrentTag = CreateTag(tagName);
             ParrentTag.AddTag(CurrentTag);
         }
+
     }
 }
