@@ -15,7 +15,7 @@
             Element elem3 = new Element();
             Tag brr = new BrTag();
 
-            //Tag h1 = new Tag(TagType.h1);
+            Tag h1 = new H1Tag();
 
             elem1.SetContent("titlu");
             elem2.SetContent("giele");
@@ -29,12 +29,12 @@
             head.AddTag(title);
             head.AddElement(elem3);
             body.AddTag(div);
-            //div.AddTag(h1);
+            div.AddTag(h1);
             div.AddAttribute("color", "blue");
             div.AddAttribute("color1", "red");
             //title.SetContent("Gigi 4 the WIN!!");
             //head.SetContent("gigel");
-            html.Render();
+            //html.Render();
             Parser.ParseFile("index.html");
         }
     }

@@ -13,13 +13,15 @@ namespace FirstApp
         }
         public override void AddTag(Tag child)
         {
-            if (child.Type != TagType.head
-                && child.Type != TagType.body
-                && child.Type != TagType.html
-                && child.Type != TagType.title)
+            var childTagType = child.GetTagType();
+
+            if (childTagType != TagType.head
+                && childTagType != TagType.body
+                && childTagType != TagType.html
+                && childTagType != TagType.title)
             {
                 Children.Add(child);
-                child.Father = this;
+                child.SetFather(this);
             }
             else
             {

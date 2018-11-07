@@ -7,23 +7,31 @@ namespace FirstApp
 {
     public class Tag : Element
     {
-        public List<Element> Children { get; set; }
-        public bool IsSelfClosing { get; set; }
-        public TagType Type { get; set; }
-        public IDictionary<string, string> Attributes { get; set; }
-        public Tag Father { get; set; }
+        protected List<Element> Children { get; set; }
+        protected bool IsSelfClosing { get; set; }
+        protected TagType Type { get; set; }
+        protected IDictionary<string, string> Attributes { get; set; }
+        protected Tag Father { get; set; }
         public Tag() { }
 
         public Tag(TagType type)
         {
             Type = type;
-            Content = "";
+            SetContent("");
             Father = null;
         }
 
+        public TagType GetTagType()
+        {
+            return Type;
+        }
         public Tag GetFather()
         {
             return Father;
+        }
+        public void SetFather(Tag tag)
+        {
+            Father = tag;
         }
 
         public virtual void AddTag(Tag child)
@@ -32,9 +40,9 @@ namespace FirstApp
             child.Father = this;
         }
 
-        public void AddElement(Element Temp)
+        public virtual void AddElement(Element temp)
         {
-            Children.Add(Temp);
+            Children.Add(temp);
         }
 
         public void AddAttribute(string attribute, string value)
@@ -79,7 +87,7 @@ namespace FirstApp
                     else
                     {
                         text = AddTabs(Depth + 1, text);
-                        text.Append(child.Content + "\n");
+                        text.Append(child.GetContent() + "\n");
                     }
                 }
                 text = AddTabs(Depth, text);
@@ -120,7 +128,7 @@ namespace FirstApp
                     }
                     else
                     {
-                        Console.WriteLine(child.Content);
+                        Console.WriteLine(child.GetContent());
                     }
                 }
                 foreach (var child in Children)

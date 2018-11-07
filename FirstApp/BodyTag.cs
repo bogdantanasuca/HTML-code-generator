@@ -11,17 +11,22 @@ namespace FirstApp
             Children = new List<Element>();
             Attributes = new Dictionary<string, string>();
         }
+        public override void AddElement(Element temp)
+        {
+        }
         public override void AddTag(Tag child)
         {
+            var childTagType = child.GetTagType();
+
             try
             {
-                if (child.Type != TagType.head
-                && child.Type != TagType.body
-                && child.Type != TagType.html
-                && child.Type != TagType.title)
+                if (childTagType != TagType.head
+                && childTagType != TagType.body
+                && childTagType != TagType.html
+                && childTagType != TagType.title)
                 {
                     Children.Add(child);
-                    child.Father = this;
+                    child.SetFather(this);
                 }
             }
             catch (Exception)

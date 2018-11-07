@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace FirstApp
@@ -15,47 +16,62 @@ namespace FirstApp
             string text = System.IO.File.ReadAllText(FileLocation);
             text = Regex.Replace(text, @"\t|\n|\r", "");
             string TagName = "";
-            for (int i = 0; i < text.Length; i++)
+            for (int index = 0; index < text.Length; index++)
             {
-                int j = i + 1;
+                int tempIndex = index + 1;
                 //Obtain name of tag
-                if (text[i] == '<' && text[i + 1] != '/')
+                if (text[index] == '<' && text[index + 1] != '/')
                 {
-                    while (text[j] != '>' && text[j] != ' ' && text[j] != '/')
+                    while (text[tempIndex] != '>' && (text[tempIndex] != ' ' || text[tempIndex + 1] == ' ') && text[tempIndex] != '/')
                     {
-                        TagName += text[j];
-                        j++;
+                        TagName += text[tempIndex];
+                        tempIndex++;
                     }
-                    i = j;
+                    index = tempIndex;
+                    if (text[index] == ' ')
+                    {
+                        TagName = TagName.Trim();
+                        index++;
+                    }
                     if (Root == null)
                     {
+                        //html tag
                         Root = CreateTag(TagName);
                         CurrentTag = Root;
                     }
-                    else if (text[i] != '/')
+                    else if (text[index] != '/')
                     {
+                        //normal tag
                         ParseTag(TagName);
                     }
                     else
                     {
+                        //self-closing tag
                         CurrentTag.AddTag(CreateTag(TagName));
-                        i++;
+                        index = text.IndexOf('>', index + 1);
                     }
-                    if (text[i] == ' ')
+                    if (text[index-1] == ' ' && text[index]!='>')
                     {
-                        while (text[i] != '>')
+                        var attributes = new StringBuilder();
+                        while (text[index] != '>')
                         {
-                            var part = text.Substring(i + 1, text.IndexOfAny(new char[] { ' ', '>' }, i + 1) - i - 1);
-                            var attributes = part.Split("=");
-                            attributes[1] = attributes[1].Substring(1, attributes[1].Length - 2);
-                            CurrentTag.AddAttribute(attributes[0], attributes[1]);
-                            i = text.IndexOfAny(new char[] { ' ', '>' }, i + 1);
+                            attributes.Append(text[index]);
+                            index++;
+                        }
+                        attributes.Replace("=\"","*");
+                        attributes.Replace(" ","");
+                        attributes.Length--;
+                        var attribute = attributes.ToString().Split('"');
+                        foreach(var tempAtt in attribute)
+                        {
+                            var keyValue = tempAtt.Split('*');
+                            CurrentTag.AddAttribute(keyValue[0], keyValue[1]);
                         }
                     }
                 }
-                else if (text[i] == '<' && text[i + 1] == '/')
+                else if (text[index] == '<' && text[index + 1] == '/')
                 {
-                    i += CurrentTag.Type.ToString().Length + 2;
+                    index += CurrentTag.GetTagType().ToString().Length + 2;
                     CurrentTag = CurrentTag.GetFather();
                     if (ParrentTag != null)
                     {
@@ -65,13 +81,13 @@ namespace FirstApp
                 else
                 {
                     string content = "";
-                    j = i;
-                    while (text[j] != '<')
+                    tempIndex = index;
+                    while (text[tempIndex] != '<')
                     {
-                        content += text[j];
-                        j++;
+                        content += text[tempIndex];
+                        tempIndex++;
                     }
-                    i = j - 1;
+                    index = tempIndex - 1;
                     Element temp = new Element();
                     temp.SetContent(content);
                     CurrentTag.AddElement(temp);
